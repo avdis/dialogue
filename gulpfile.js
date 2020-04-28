@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');
 var gulpConcat = require('gulp-concat');
 var tap = require('gulp-tap');
-var runSequence = require('run-sequence');
+var runSequence = require('gulp4-run-sequence');
 var jscs = require('gulp-jscs');
 var uglify = require('gulp-uglify');
 var cssmin = require('gulp-cssmin');
@@ -41,7 +41,7 @@ gulp.task('jsLib', jsLib);
 gulp.task('jsMin', jsMin);
 gulp.task('jsTidy', jsTidy);
 
-function buildProduction() {
+function buildProduction(done) {
   jsSitemaps = false;
   runSequence(
     'cssTidy',
@@ -51,21 +51,24 @@ function buildProduction() {
     'js',
     'jsMin'
   );
+  done()
 }
 
-function min() {
+function min(done) {
   runSequence(
     'cssMin',
     'jsMin'
   );
+  done()
 }
 
-function watch() {
+function watch(done) {
   gulp.watch('css/**/*.css', ['css']);
   gulp.watch('js/**/*.js', ['js']);
+  done()
 }
 
-function js() {
+function js(done) {
   return gulp.src('js/' + '**/*.bundle.js', {read: false})
     .pipe(tap(function(file) {
       file.contents = browserify(file.path, {debug: jsSitemaps})
@@ -79,36 +82,40 @@ function js() {
     }))
     .pipe(buffer())
     .pipe(gulp.dest(assetDest));
+    done()
 };
 
-function css() {
+function css(done) {
   return gulp.src('css/' + '**/*.bundle.css')
     .pipe(postcss(postcssProcesses))
     .pipe(tap(function(file) {
       gutil.log('build ' + file.path);
     }))
     .pipe(gulp.dest(assetDest));
+    done()
 };
 
-function cssMin() {
+function cssMin(done) {
   return gulp.src(assetDest + '**/*.css')
     .pipe(cssmin())
     .pipe(tap(function(file) {
       gutil.log('minify ' + file.path);
     }))
     .pipe(gulp.dest(assetDest));
+    done()
 }
 
-function cssTidy() {
+function cssTidy(done) {
   return gulp.src('css/' + '**/*.css')
     .pipe(postcss([postcssCsscomb(postcssCombOptions)]))
     .pipe(tap(function(file) {
       gutil.log('tidy ' + file.path);
     }))
     .pipe(gulp.dest('css'));
+    done()
 }
 
-function jsLib() {
+function jsLib(done) {
   gulp.src([
       'node_modules/mustache/mustache.js'
     ])
@@ -117,22 +124,25 @@ function jsLib() {
     }))
     .pipe(gulpConcat('lib.js'))
     .pipe(gulp.dest(assetDest));
+    done()
 }
 
-function jsMin() {
+function jsMin(done) {
   return gulp.src(assetDest + '**.js')
     .pipe(uglify())
     .pipe(tap(function(file) {
       gutil.log('minify ' + file.path);
     }))
     .pipe(gulp.dest(assetDest));
+    done()
 }
 
-function jsTidy() {
+function jsTidy(done) {
   return gulp.src(['js/' + '**/*.js'])
     .pipe(jscs({
       configPath: '.jsTidyGoogle.json',
       fix: true
     }))
     .pipe(gulp.dest('js'));
+    done()
 }
