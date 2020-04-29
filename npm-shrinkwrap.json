@@ -5232,11 +5232,19 @@
       "dev": true
     },
     "mwyatt-codex": {
-      "version": "github:avdis/legacy-codex#8b54ac62895a1da77b1f2442562eb91e8b90a7fb",
+      "version": "github:avdis/legacy-codex#b25fcd14da09f087a13391f941da8b92801ee0c6",
       "from": "github:avdis/legacy-codex#master",
       "dev": true,
       "requires": {
-        "normalize.css": "3.0.3"
+        "autoprefixer": "^9.7.3",
+        "gulp": "^4.0.2",
+        "gulp-postcss": "^8.0.0",
+        "normalize.css": "^8.0.1",
+        "postcss-color-function": "^4.1.0",
+        "postcss-conditionals": "^2.1.0",
+        "postcss-custom-properties": "^9.1.1",
+        "postcss-hexrgba": "^2.0.0",
+        "postcss-import": "^12.0.1"
       }
     },
     "nan": {
@@ -5351,9 +5359,9 @@
       "dev": true
     },
     "normalize.css": {
-      "version": "3.0.3",
-      "resolved": "https://registry.npmjs.org/normalize.css/-/normalize.css-3.0.3.tgz",
-      "integrity": "sha1-rMACYuI1osqpE2Oi5eO/pPitBcY=",
+      "version": "8.0.1",
+      "resolved": "https://registry.npmjs.org/normalize.css/-/normalize.css-8.0.1.tgz",
+      "integrity": "sha512-qizSNPO93t1YUuUhP22btGOo3chcvDFqFaj2TRybP0DMxkHOCTYwp3n34fel4a31ORXy4m1Xq0Gyqpb5m33qIg==",
       "dev": true
     },
     "now-and-later": {
@@ -6078,6 +6086,26 @@
       "dev": true,
       "requires": {
         "postcss": "^7.0.14"
+      }
+    },
+    "postcss-import": {
+      "version": "12.0.1",
+      "resolved": "https://registry.npmjs.org/postcss-import/-/postcss-import-12.0.1.tgz",
+      "integrity": "sha512-3Gti33dmCjyKBgimqGxL3vcV8w9+bsHwO5UrBawp796+jdardbcFl4RP5w/76BwNL7aGzpKstIfF9I+kdE8pTw==",
+      "dev": true,
+      "requires": {
+        "postcss": "^7.0.1",
+        "postcss-value-parser": "^3.2.3",
+        "read-cache": "^1.0.0",
+        "resolve": "^1.1.7"
+      },
+      "dependencies": {
+        "postcss-value-parser": {
+          "version": "3.3.1",
+          "resolved": "https://registry.npmjs.org/postcss-value-parser/-/postcss-value-parser-3.3.1.tgz",
+          "integrity": "sha512-pISE66AbVkp4fDQ7VHBwRNXzAAKJjw4Vw7nWI/+Q3vuly7SNfgYXvm6i5IgFylHGK5sP/xHAbB7N49OS4gWNyQ==",
+          "dev": true
+        }
       }
     },
     "postcss-load-config": {
