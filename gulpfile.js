@@ -1,16 +1,12 @@
 var gulp = require('gulp');
-var gutil = require('gulp-util');
 var gulpConcat = require('gulp-concat');
 var tap = require('gulp-tap');
 var runSequence = require('gulp4-run-sequence');
-var jscs = require('gulp-jscs');
 var uglify = require('gulp-uglify');
-var cssmin = require('gulp-cssmin');
+var cleanCss = require('gulp-clean-css');
 var autoprefixer = require('autoprefixer');
 var postcss = require('gulp-postcss');
-var postcssImport = require('postcss-import');
-var postcssCsscomb = require('postcss-csscomb');
-var postcssCombOptions = require('./.csscomb.json');
+var postcssImport = require('postcss-easy-import');
 var postcssColorFunction = require('postcss-color-function');
 var postcssHexrgba = require('postcss-hexrgba');
 var postcssConditionals = require('postcss-conditionals');
@@ -25,7 +21,7 @@ var postcssProcesses = [
   postcssConditionals,
   postcssHexrgba(),
   postcssColorFunction(),
-  autoprefixer({browsers: ['last 1 version']})
+  autoprefixer()
 ];
 var assetDest = 'asset/';
 var jsSitemaps = true;
@@ -35,19 +31,15 @@ gulp.task('watch', watch);
 gulp.task('min', min);
 gulp.task('css', css);
 gulp.task('cssMin', cssMin);
-gulp.task('cssTidy', cssTidy);
 gulp.task('js', js);
 gulp.task('jsLib', jsLib);
 gulp.task('jsMin', jsMin);
-gulp.task('jsTidy', jsTidy);
 
 function buildProduction(done) {
   jsSitemaps = false;
   runSequence(
-    'cssTidy',
     'css',
     'cssMin',
-    'jsTidy',
     'js',
     'jsMin'
   );
@@ -78,7 +70,6 @@ function js(done) {
           minify: true
         })
         .bundle();
-      gutil.log('build ' + file.path);
     }))
     .pipe(buffer())
     .pipe(gulp.dest(assetDest));
@@ -89,7 +80,6 @@ function css(done) {
   return gulp.src('css/' + '**/*.bundle.css')
     .pipe(postcss(postcssProcesses))
     .pipe(tap(function(file) {
-      gutil.log('build ' + file.path);
     }))
     .pipe(gulp.dest(assetDest));
     done()
@@ -97,21 +87,12 @@ function css(done) {
 
 function cssMin(done) {
   return gulp.src(assetDest + '**/*.css')
-    .pipe(cssmin())
+    .pipe(cleanCss({
+      level: 0
+    }))
     .pipe(tap(function(file) {
-      gutil.log('minify ' + file.path);
     }))
     .pipe(gulp.dest(assetDest));
-    done()
-}
-
-function cssTidy(done) {
-  return gulp.src('css/' + '**/*.css')
-    .pipe(postcss([postcssCsscomb(postcssCombOptions)]))
-    .pipe(tap(function(file) {
-      gutil.log('tidy ' + file.path);
-    }))
-    .pipe(gulp.dest('css'));
     done()
 }
 
@@ -120,7 +101,6 @@ function jsLib(done) {
       'node_modules/mustache/mustache.js'
     ])
     .pipe(tap(function(file) {
-      gutil.log('concat ' + file.path);
     }))
     .pipe(gulpConcat('lib.js'))
     .pipe(gulp.dest(assetDest));
@@ -131,18 +111,8 @@ function jsMin(done) {
   return gulp.src(assetDest + '**.js')
     .pipe(uglify())
     .pipe(tap(function(file) {
-      gutil.log('minify ' + file.path);
     }))
     .pipe(gulp.dest(assetDest));
     done()
 }
 
-function jsTidy(done) {
-  return gulp.src(['js/' + '**/*.js'])
-    .pipe(jscs({
-      configPath: '.jsTidyGoogle.json',
-      fix: true
-    }))
-    .pipe(gulp.dest('js'));
-    done()
-}
